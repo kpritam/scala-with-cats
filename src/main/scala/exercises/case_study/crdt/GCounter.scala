@@ -29,12 +29,3 @@ object GCounter {
       def total(f: F[K, V])(implicit m: CommutativeMonoid[V]): V                      = f.values.combineAll
     }
 }
-
-object GCounterOps {
-  implicit class GCounterOps[F[_, _], K, V](f: F[K, V]) {
-    def increment(key: K, value: V)(implicit gc: GCounter[F, K, V], m: CommutativeMonoid[V]): F[K, V] =
-      gc.increment(f)(key, value)
-    def merge(f2: F[K, V])(implicit gc: GCounter[F, K, V], b: BoundedSemiLattice[V]): F[K, V] = gc.merge(f, f2)
-    def total(implicit gc: GCounter[F, K, V], m: CommutativeMonoid[V]): V                     = gc.total(f)
-  }
-}
